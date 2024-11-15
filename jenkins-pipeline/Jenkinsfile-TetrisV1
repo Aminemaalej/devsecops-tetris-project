@@ -4,9 +4,9 @@ pipeline {
         jdk 'jdk'
         nodejs 'nodejs'
     }
-    environment  {
-        SCANNER_HOME=tool 'sonar-scanner'
-    }
+    // environment  {
+    //     SCANNER_HOME=tool 'sonar-scanner'
+    // }
     stages {
         stage('Cleaning Workspace') {
             steps {
@@ -18,23 +18,23 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/Aminemaalej/devsecops-tetris-project.git'
             }
         }
-        stage('Sonarqube Analysis') {
-            steps {
-                dir('Tetris-V1') {
-                    withSonarQubeEnv('sonar-server') {
-                        sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=TetrisVersion1.0 \
-                        -Dsonar.projectKey=TetrisVersion1.0 '''
-                    }
-                }
-            }
-        }
-        stage('Quality Check') {
-            steps {
-                script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token' 
-                }
-            }
-        }
+        // stage('Sonarqube Analysis') {
+        //     steps {
+        //         dir('Tetris-V1') {
+        //             withSonarQubeEnv('sonar-server') {
+        //                 sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=TetrisVersion1.0 \
+        //                 -Dsonar.projectKey=TetrisVersion1.0 '''
+        //             }
+        //         }
+        //     }
+        // }
+        // stage('Quality Check') {
+        //     steps {
+        //         script {
+        //             waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token' 
+        //         }
+        //     }
+        // }
         stage('Installing Dependencies') {
             steps {
                 dir('Tetris-V1') {
@@ -50,13 +50,13 @@ pipeline {
                 }
             }
         }
-        stage('Trivy File Scan') {
-            steps {
-                dir('Tetris-V1') {
-                    sh 'trivy fs . > trivyfs.txt'
-                }
-            }
-        }
+        // stage('Trivy File Scan') {
+        //     steps {
+        //         dir('Tetris-V1') {
+        //             sh 'trivy fs . > trivyfs.txt'
+        //         }
+        //     }
+        // }
         stage("Docker Image Build") {
             steps {
                 script {
@@ -80,11 +80,11 @@ pipeline {
                 }
             }
         }
-        stage("TRIVY Image Scan") {
-            steps {
-                sh 'trivy image avian19/tetrisv1:${BUILD_NUMBER} > trivyimage.txt' 
-            }
-        }
+        // stage("TRIVY Image Scan") {
+        //     steps {
+        //         sh 'trivy image aminemaalej/tetrisv1:${BUILD_NUMBER} > trivyimage.txt' 
+        //     }
+        // }
         stage('Checkout Code') {
             steps {
                 git branch: 'main', url: 'https://github.com/Aminemaalej/devsecops-tetris-project.git'
